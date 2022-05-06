@@ -14,10 +14,5 @@
     must_not_contain:
       - rror
   files:
-    - path: outputfile.txt
-      contains:
-        - Hello world!
-    - path: sample1.txt
-    - path: sample2.txt
-    - path: sample3.txt
-    - path: sample1.bam
+    - path: sample1/concat/forward.fastq.gz
+    - path: sample1/umi-trie/forward_dedup.fastq.gz

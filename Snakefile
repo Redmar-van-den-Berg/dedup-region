@@ -5,7 +5,7 @@ pepfile: config["pepfile"]
 
 
 # Apply the settings from the pepfile, overwriting the default ones
-default.update(pep.config.get("snakemake-pipeline", dict()))
+default.update(pep.config.get("dedup-region", dict()))
 
 # Apply the options specified to snakemake, overwriting the default settings
 # and the settings from the PEP file
@@ -14,69 +14,59 @@ default.update(config)
 # Set the updated dict as the configuration for the pipeline
 config = default
 
-
 rule all:
     input:
-        outfile=get_outfile(),
-        samples=expand("{sample}.txt", sample=pep.sample_table["sample_name"]),
-        bams=expand("{sample}.bam", sample=pep.sample_table["sample_name"]),
-        settings="settings.txt",
+        concat=expand(
+            "{sample}/umi-trie/forward_dedup.fastq.gz",
+            sample=pep.sample_table.sample_name,
+        ),
 
 
-rule example:
-    output:
-        get_outfile(),
-    log:
-        "log/stdout.txt",
-    container:
-        containers["debian"]
-    shell:
-        """
-        echo "Hello world!" > {output} 2> {log}
-        """
-
-
-rule sample:
-    output:
-        "{sample}.txt",
-    log:
-        "log/{sample}_touch.txt",
-    container:
-        containers["debian"]
-    shell:
-        """
-        touch {output} 2> {log}
-        """
-
-
-rule map:
+rule concat:
+    """Concatentate the input fastq files"""
     input:
-        f=get_forward,
-        r=get_reverse,
+        forw=get_forward,
+        rev=get_reverse,
+        umi=get_umi,
     output:
-        "{sample}.bam",
+        forw="{sample}/concat/forward.fastq.gz",
+        rev="{sample}/concat/reverse.fastq.gz",
+        umi="{sample}/concat/umi.fastq.gz",
     log:
-        "log/{sample}_map.txt",
+        "log/{sample}_concat.txt",
     container:
         containers["debian"]
     shell:
         """
-        echo mem ref.fa {input.f} {input.r} > {output}
+        mkdir -p $(dirname {output.forw})
+
+        cp {input.forw} {output.forw} || cat {input.forw} > {output.forw}
+        cp {input.rev} {output.rev} || cat {input.rev} > {output.rev}
+        cp {input.umi} {output.umi} || cat {input.umi} > {output.umi}
         """
 
 
-rule settings:
+rule umi_trie:
+    """Run umi-trie on the fastq files"""
+    input:
+        forw=rules.concat.output.forw,
+        rev=rules.concat.output.rev,
+        umi=rules.concat.output.umi,
+        umi_trie=config["umi-trie"],
     output:
-        "settings.txt",
-    params:
-        s1=config["setting1"],
-        s2=config["setting2"],
-        s3=config["setting3"],
+        forw="{sample}/umi-trie/forward_dedup.fastq.gz",
+        rev="{sample}/umi-trie/reverse_dedup.fastq.gz",
+        umi="{sample}/umi-trie/umi_dedup.fastq.gz",
     log:
-        "log/settings.txt",
+        "log/{sample}-umi-trie.txt",
     container:
-        containers["debian"]
+        containers["dnaio"]
     shell:
         """
-        echo {params.s1} {params.s2} {params.s3} > {output}
+        folder=$(dirname {output.forw})
+        mkdir -p $folder
+
+        {input.umi_trie} \
+            -f $folder \
+            {input.forw} {input.rev} {input.umi} 2> {log}
         """
