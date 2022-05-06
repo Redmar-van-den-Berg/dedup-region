@@ -1,6 +1,7 @@
 containers = {
     "debian": "docker://debian:latest",
-    "dnaio": "docker://quay.io/biocontainers/dnaio:0.7.1--py39hbf8eff0_1",
+    # dnaio 0.8.1, pysam 0.19.0
+    "dnaio": "docker://quay.io/biocontainers/mulled-v2-2996a7d035117c4238b2b801e740a69df21d91e1:6b3ae5f1a97f370227e8134ba3efc0e318b288c3-0",
     "samtools": "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0",
 }
 
