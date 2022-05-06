@@ -1,3 +1,3 @@
-sample_name,forward,reverse,umi
-sample1,tests/data/micro_R1.fq.gz,tests/data/micro_R2.fq.gz,tests/data/micro_R3.fq.gz
-sample2,tests/data/micro_R1.fq.gz,tests/data/micro_R2.fq.gz,tests/data/micro_R3.fq.gz
+sample_name,forward,reverse,umi,bamfile
+sample1,tests/data/micro_R1.fq.gz,tests/data/micro_R2.fq.gz,tests/data/micro_R3.fq.gz,tests/data/micro.bam
+sample2,tests/data/micro_R1.fq.gz,tests/data/micro_R2.fq.gz,tests/data/micro_R3.fq.gz,tests/data/micro.bam

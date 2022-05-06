@@ -1,9 +1,10 @@
 containers = {
     "debian": "docker://debian:latest",
     "dnaio": "docker://quay.io/biocontainers/dnaio:0.7.1--py39hbf8eff0_1",
+    "samtools": "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0",
 }
 
-default = {"umi-trie": srcdir("bin/umi-trie")}
+default = dict()
 
 
 def get_fastq(wildcards, column):
@@ -27,3 +28,7 @@ def get_reverse(wildcards):
 
 def get_umi(wildcards):
     return get_fastq(wildcards, "umi")
+
+
+def get_bamfile(wildcards):
+    return pep.sample_table.loc[wildcards.sample, "bamfile"]

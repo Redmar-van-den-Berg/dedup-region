@@ -14,10 +14,15 @@ default.update(config)
 # Set the updated dict as the configuration for the pipeline
 config = default
 
+
 rule all:
     input:
         concat=expand(
             "{sample}/umi-trie/forward_dedup.fastq.gz",
+            sample=pep.sample_table.sample_name,
+        ),
+        regions=expand(
+            "{sample}/regions/{sample}.bam",
             sample=pep.sample_table.sample_name,
         ),
 
@@ -52,7 +57,7 @@ rule umi_trie:
         forw=rules.concat.output.forw,
         rev=rules.concat.output.rev,
         umi=rules.concat.output.umi,
-        umi_trie=config["umi-trie"],
+        umi_trie=config["umi_trie"],
     output:
         forw="{sample}/umi-trie/forward_dedup.fastq.gz",
         rev="{sample}/umi-trie/reverse_dedup.fastq.gz",
@@ -69,4 +74,30 @@ rule umi_trie:
         {input.umi_trie} \
             -f $folder \
             {input.forw} {input.rev} {input.umi} 2> {log}
+        """
+
+
+rule extract_regions:
+    """Extract regions from the bam file"""
+    input:
+        bam=get_bamfile,
+        bed=config["bedfile"],
+    output:
+        bam="{sample}/regions/{sample}.bam",
+        bai="{sample}/regions/{sample}.bai",
+    log:
+        "log/{sample}/extract_regions.txt",
+    container:
+        containers["samtools"]
+    shell:
+        """
+        samtools view \
+            --bam \
+            --with-header \
+            --use-index \
+            --regions-file {input.bed} \
+            --output-fmt BAM \
+            --output {output.bam} \
+            --write-index \
+            {input.bam}
         """

@@ -6,13 +6,14 @@
       --dryrun
       --reason
       --printshellcmds
-      --config pepfile=tests/pep/project_config.yaml
+      --config pepfile=tests/pep/project_config.yaml umi_trie=bin/umi-trie-dummy
       --snakefile Snakefile
   exit_code: 0
   stdout:
     contains:
       - "sample1/umi-trie/forward_dedup.fastq.gz"
       - "sample2/umi-trie/forward_dedup.fastq.gz"
+      - "sample1/regions/sample1.bam"
 
 - name: dry-run-subsamples
   tags:
