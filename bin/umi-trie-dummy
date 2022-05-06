@@ -74,11 +74,11 @@ if __name__ == '__main__':
     parser.add_argument('forward')
     parser.add_argument('reverse')
     parser.add_argument('umi')
-    parser.add_argument('-f', default='.', required=False, help='output folder')
+    parser.add_argument('-d', default='.', required=False, help='output folder')
     args = parser.parse_args()
 
     # Determine the output filenames
-    args.forward_out = output_file_name(args.forward, args.f)
-    args.reverse_out = output_file_name(args.reverse, args.f)
-    args.umi_out = output_file_name(args.umi, args.f)
+    args.forward_out = output_file_name(args.forward, args.d)
+    args.reverse_out = output_file_name(args.reverse, args.d)
+    args.umi_out = output_file_name(args.umi, args.d)
     main(args)
