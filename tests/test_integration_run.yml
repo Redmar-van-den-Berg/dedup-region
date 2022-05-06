@@ -17,7 +17,7 @@
     - path: sample1/concat/forward.fastq.gz
     - path: sample1/umi-trie/forward_dedup.fastq.gz
     - path: sample1/regions/sample1.bam
-      #- path: sample1/regions/sample1.bam.bai
+    - path: sample1/regions/sample1.bam.bai
 
 - name: integration-subsamples
   tags:
@@ -34,3 +34,4 @@
   files:
     - path: sample1/concat/forward.fastq.gz
     - path: sample1/umi-trie/forward_dedup.fastq.gz
+    - path: sample1/regions/sample1.bam
