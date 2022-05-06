@@ -6,13 +6,31 @@
       --reason
       --printshellcmds
       --jobs 1
-      --latency-wait 120
+      --latency-wait 10
       --use-singularity --singularity-args ' --cleanenv --bind /tmp'
       --config pepfile=tests/pep/project_config.yaml umi_trie=bin/umi-trie-dummy
       --snakefile Snakefile
   stderr:
     must_not_contain:
       - rror
+  files:
+    - path: sample1/concat/forward.fastq.gz
+    - path: sample1/umi-trie/forward_dedup.fastq.gz
+    - path: sample1/regions/sample1.bam
+      #- path: sample1/regions/sample1.bam.bai
+
+- name: integration-subsamples
+  tags:
+    - integration
+  command: >
+    snakemake
+      --reason
+      --printshellcmds
+      --jobs 1
+      --latency-wait 10
+      --use-singularity --singularity-args ' --cleanenv --bind /tmp'
+      --config pepfile=tests/pep/project_subsamples.yaml
+      --snakefile Snakefile
   files:
     - path: sample1/concat/forward.fastq.gz
     - path: sample1/umi-trie/forward_dedup.fastq.gz

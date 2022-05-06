@@ -84,7 +84,7 @@ rule extract_regions:
         bed=config["bedfile"],
     output:
         bam="{sample}/regions/{sample}.bam",
-        bai="{sample}/regions/{sample}.bai",
+        #bai="{sample}/regions/{sample}.bai",
     log:
         "log/{sample}/extract_regions.txt",
     container:
@@ -93,11 +93,9 @@ rule extract_regions:
         """
         samtools view \
             --bam \
-            --with-header \
-            --use-index \
-            --regions-file {input.bed} \
-            --output-fmt BAM \
-            --output {output.bam} \
-            --write-index \
-            {input.bam}
+            {input.bam} \
+            > {output.bam} \
+            2> {log} \
+
+        #samtools index {output.bam} 2>> {log}
         """
