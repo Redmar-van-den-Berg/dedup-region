@@ -17,12 +17,8 @@ config = default
 
 rule all:
     input:
-        concat=expand(
-            "{sample}/umi-trie/forward_dedup.fastq.gz",
-            sample=pep.sample_table.sample_name,
-        ),
-        regions=expand(
-            "{sample}/regions/{sample}.bam",
+        downsampled_bam=expand(
+            "{sample}/regions/{sample}.dedup.bam",
             sample=pep.sample_table.sample_name,
         ),
 
@@ -101,4 +97,29 @@ rule extract_regions:
             2> {log}
 
             samtools index {output.bam} 2>> {log}
+        """
+
+
+rule downsample_bam:
+    """Downsample a bam file based on deduplicated fastq"""
+    input:
+        bam=rules.extract_regions.output.bam,
+        fastq=rules.umi_trie.output.umi,
+        downsample=srcdir("bin/downsample_bam.py"),
+    output:
+        bam="{sample}/regions/{sample}.dedup.bam",
+        bai="{sample}/regions/{sample}.dedup.bam.bai",
+    log:
+        "log/{sample}/downsample_bam.txt",
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        python3 {input.downsample} \
+            --input-bam {input.bam} \
+            --input-fastq {input.fastq} \
+            --output {output.bam}
+
+        # Index the output bam file
+        python -c "import pysam; pysam.index('{output.bam}')"
         """
