@@ -29,7 +29,8 @@ def discard_from_fastq(read_names, fastqfile):
     """ Read the fastq file, discarding readnames as we go """
     fastq = dnaio.open(fastqfile, opener=xopen.xopen)
     for read in fastq:
-        if read.name in read_names:
+        read_name = read.name.split(' ')[0]
+        if read_name in read_names:
             read_names.remove(read.name)
 
 
