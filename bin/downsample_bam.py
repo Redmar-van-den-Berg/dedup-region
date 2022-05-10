@@ -31,7 +31,7 @@ def discard_from_fastq(read_names, fastqfile):
     for read in fastq:
         read_name = read.name.split(' ')[0]
         if read_name in read_names:
-            read_names.remove(read.name)
+            read_names.remove(read_name)
 
 
 def write_bam(infile, outfile, exclude):
