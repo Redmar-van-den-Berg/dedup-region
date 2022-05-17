@@ -10,7 +10,10 @@ class Depth:
 
 
 def get_transcript_positions(transcript):
-    pass
+    positions = list()
+    for exon in transcript:
+        positions+=get_exon_positions(exon)
+    return positions
 
 
 def get_exon_positions(exon):
@@ -18,9 +21,15 @@ def get_exon_positions(exon):
     # Get exon start and end as ints
     start = int(exon['start'])
 
-    # We want to include the last bp of the exon, so -1
-    end = int(exon['end']) - 1
+    # We want to include the last bp of the exon
+    end = int(exon['end'])
 
     if exon['strand'] == '+':
-        for i in range(start, end + 2):
+        for i in range(start, end + 1):
+            yield i
+
+    # Start position is before end on the chromosome, even for "-" strand
+    # transcripts
+    elif exon['strand'] == '-':
+        for i in range(end, start - 1, -1):
             yield i
