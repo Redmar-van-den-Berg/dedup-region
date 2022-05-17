@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 
+import argparse
 import dataclasses
+import json
+
+import gtf
+
 
 @dataclasses.dataclass
 class Depth:
@@ -41,7 +46,7 @@ def get_transcript_depth(depths, transcript):
     """Yield the depth for every position within transcript"""
     # Make a dictionary of the depths so we can easily access the Depth objecs
     # by position
-    d = {x.pos: x for x in depths}
+    d = {int(x.pos): x for x in depths}
 
     for pos in get_transcript_positions(transcript):
         yield d[pos]
@@ -64,3 +69,61 @@ def get_avg_exon_depth(depths, exon):
 
 def get_avg_transcript_depth(depths, transcript):
     return [get_avg_exon_depth(depths, exon) for exon in transcript]
+
+
+def get_exons(gtf_fname, name):
+    """ Extract the exons for transcript name from gtf """
+    with open(gtf_fname) as fin:
+        for record in gtf.gtf_to_json(fin):
+            if record['feature'] == 'exon':
+                if record['attribute']['transcript_id'] == name:
+                    yield record
+
+
+def get_coverage(cov_fname):
+    """ Extract the coverage from the coverage file """
+    coverage = list()
+    with open(cov_fname) as fin:
+        for line in fin:
+            chrom, pos, depth = line.strip().split()
+            coverage.append(Depth(chrom, int(pos), int(depth)))
+
+    return coverage
+
+
+def main(args):
+    transcript = list(get_exons(args.gtf, args.transcript))
+    coverage = get_coverage(args.coverage)
+
+    # Print the transcript json
+    if (out := args.transcript_out):
+        with open(out, 'wt') as fout:
+            print(json.dumps(transcript, indent=True), file=fout)
+
+    # Print the coverage of the transcript
+    if (out := args.coverage_out):
+        with open(args.coverage_out, 'wt') as fout:
+            for depth in get_transcript_depth(coverage, transcript):
+                print(depth.chrom, depth.pos, depth.depth, sep='\t', file=fout)
+
+    # Print the average exon coverage for each exon in transcript
+    if (out := args.avg_exon):
+        with open(out, 'wt') as fout:
+            for depth in get_avg_transcript_depth(coverage, transcript):
+                print(depth, file=fout)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+
+    parser.add_argument('--gtf', required=True, help='GTF file')
+    parser.add_argument('--transcript', required=True)
+    parser.add_argument('--coverage', required=True)
+    parser.add_argument('--coverage-out', required=False)
+    parser.add_argument('--transcript-out', required=False)
+    parser.add_argument('--avg-exon', required=False)
+
+    arguments = parser.parse_args()
+    main(arguments)
