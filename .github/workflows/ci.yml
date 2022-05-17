@@ -75,3 +75,37 @@ jobs:
           echo $file; cat $file
         done
         '
+  test-scripts:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache conda packages
+      uses: actions/cache@v2
+      env:
+        # Increase this value to manually invalidate the cache
+        CACHE_NUMBER: 0
+      with:
+        path: ~/conda_pkgs_dir
+        key:
+          ${{ runner.os}}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yml') }}
+
+    - name: Cache conda environment
+      uses: actions/cache@v2
+      env:
+        # Increase this value to manually invalidate the cache
+        CACHE_NUMBER: 0
+      with:
+        path: /usr/share/miniconda/envs/dedup-region
+        key:
+          ${{ runner.os}}-dedup-region-${{ env.CACHE_NUMBER }}-${{ hashFiles('environment.yml') }}
+
+    - uses: conda-incubator/setup-miniconda@v2.0.1
+      # https://github.com/conda-incubator/setup-miniconda.
+      with:
+        activate-environment: dedup-region
+        environment-file: environment.yml
+        auto-activate-base: false
+
+    - name: Run pytest on the scripts
+      run: pytest -v ./bin/
