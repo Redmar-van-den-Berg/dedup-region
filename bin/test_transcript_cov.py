@@ -1,4 +1,30 @@
-from transcript_cov import Depth, get_exon_positions, get_transcript_positions
+import pytest
+
+from transcript_cov import Depth
+from transcript_cov import get_exon_positions, get_transcript_positions
+from transcript_cov import get_transcript_depth
+from transcript_cov import get_avg_exon_depth
+
+
+@pytest.fixture
+def depths():
+    # Create list of depths
+    # (pos, depth)
+    depths = [
+            (100, 5),
+            (101, 4),
+            (102, 3),
+            (103, 4),
+            (104, 5),
+            (105, 5),
+            (106, 5),
+            (107, 6),
+            (108, 3),
+            (109, 3),
+            (110, 3)
+    ]
+    # Just prepend chr1 here, since it is constant
+    return [Depth('chr1', *x) for x in depths]
 
 
 def test_create_depth():
@@ -47,3 +73,50 @@ def test_get_transcript_positions_neg_strand():
     expected = [113, 112, 111, 110, 105, 104, 103, 102, 101, 100]
 
     assert list(get_transcript_positions(transcript)) == expected
+
+
+def test_get_transcript_depth_pos_strand(depths):
+    # A transcript is simply a list of exons
+    exon1 = {'start': '100', 'end': '103', 'strand': '+'}
+    exon2 = {'start': '107', 'end': '108', 'strand': '+'}
+    transcript = [exon1, exon2]
+
+    expected = [
+            Depth('chr1', 100, 5),
+            Depth('chr1', 101, 4),
+            Depth('chr1', 102, 3),
+            Depth('chr1', 103, 4),
+            Depth('chr1', 107, 6),
+            Depth('chr1', 108, 3)
+    ]
+
+    assert list(get_transcript_depth(depths, transcript)) == expected
+
+
+def test_get_transcript_depth_neg_strand(depths):
+    # A transcript is simply a list of exons
+    exon1 = {'start': '107', 'end': '108', 'strand': '-'}
+    exon2 = {'start': '100', 'end': '103', 'strand': '-'}
+    transcript = [exon1, exon2]
+
+    expected = [
+            Depth('chr1', 108, 3),
+            Depth('chr1', 107, 6),
+            Depth('chr1', 103, 4),
+            Depth('chr1', 102, 3),
+            Depth('chr1', 101, 4),
+            Depth('chr1', 100, 5)
+    ]
+
+    assert list(get_transcript_depth(depths, transcript)) == expected
+
+
+def test_get_avg_exon_depth(depths):
+    # A transcript is simply a list of exons
+    exon1 = {'start': '107', 'end': '108', 'strand': '-', 'seqname': 'chr1'}
+    exon2 = {'start': '100', 'end': '103', 'strand': '-', 'seqname': 'chr1'}
+    transcript = [exon1, exon2]
+
+    expected = [4.5, 4]
+
+    assert get_avg_exon_depth(depths, transcript) == expected
