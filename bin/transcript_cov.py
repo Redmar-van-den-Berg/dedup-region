@@ -10,6 +10,7 @@ class Depth:
 
 
 def get_transcript_positions(transcript):
+    """Yield all positions that are part of the transcript"""
     positions = list()
     for exon in transcript:
         positions+=get_exon_positions(exon)
@@ -17,7 +18,7 @@ def get_transcript_positions(transcript):
 
 
 def get_exon_positions(exon):
-    """ Yield all positions that are in the specified exon """
+    """Yield all positions that are part of the exon"""
     # Get exon start and end as ints
     start = int(exon['start'])
 
@@ -37,6 +38,7 @@ def get_exon_positions(exon):
 
 
 def get_transcript_depth(depths, transcript):
+    """Yield the depth for every position within transcript"""
     # Make a dictionary of the depths so we can easily access the Depth objecs
     # by position
     d = {x.pos: x for x in depths}
@@ -46,7 +48,7 @@ def get_transcript_depth(depths, transcript):
 
 
 def get_avg_exon_depth(depths, transcript):
-    """Calculate the average depth per exon"""
+    """Calculate the average depth for each exon in transcript"""
     avg = list()
     for exon in transcript:
         # The chromosome the exon is on
@@ -57,7 +59,7 @@ def get_avg_exon_depth(depths, transcript):
 
         # Get all depths that are part of the exon positions, on the correct
         # chromosome
-        exon_depths = [x.depth for x in depths if x.pos in positions and x.chrom == chrom]
+        exon_depths = [x.depth for x in depths if x.chrom == chrom and x.pos in positions]
 
         avg.append(sum(exon_depths)/len(exon_depths))
 
