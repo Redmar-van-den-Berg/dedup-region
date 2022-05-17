@@ -4,6 +4,7 @@ from transcript_cov import Depth
 from transcript_cov import get_exon_positions, get_transcript_positions
 from transcript_cov import get_transcript_depth
 from transcript_cov import get_avg_exon_depth
+from transcript_cov import get_avg_transcript_depth
 
 
 @pytest.fixture
@@ -114,9 +115,19 @@ def test_get_transcript_depth_neg_strand(depths):
 def test_get_avg_exon_depth(depths):
     # A transcript is simply a list of exons
     exon1 = {'start': '107', 'end': '108', 'strand': '-', 'seqname': 'chr1'}
+    exon2 = {'start': '107', 'end': '108', 'strand': '+', 'seqname': 'chr1'}
+
+    # The average depth is the same for + and - strand exons
+    assert get_avg_exon_depth(depths, exon1) == 4.5
+    assert get_avg_exon_depth(depths, exon2) == 4.5
+
+
+def test_get_avg_transcript_depth(depths):
+    # A transcript is simply a list of exons
+    exon1 = {'start': '107', 'end': '108', 'strand': '-', 'seqname': 'chr1'}
     exon2 = {'start': '100', 'end': '103', 'strand': '-', 'seqname': 'chr1'}
     transcript = [exon1, exon2]
 
     expected = [4.5, 4]
 
-    assert get_avg_exon_depth(depths, transcript) == expected
+    assert get_avg_transcript_depth(depths, transcript) == expected
