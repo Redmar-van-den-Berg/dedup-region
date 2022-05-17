@@ -81,6 +81,7 @@ rule extract_regions:
     output:
         bam="{sample}/regions/{sample}.bam",
         bai="{sample}/regions/{sample}.bam.bai",
+        cov="{sample}/regions/{sample}.cov",
     log:
         "log/{sample}/extract_regions.txt",
     container:
@@ -97,6 +98,7 @@ rule extract_regions:
             2> {log}
 
             samtools index {output.bam} 2>> {log}
+            samtools depth {output.bam} > {output.cov} 2>> {log}
         """
 
 
@@ -109,6 +111,7 @@ rule downsample_bam:
     output:
         bam="{sample}/regions/{sample}.dedup.bam",
         bai="{sample}/regions/{sample}.dedup.bam.bai",
+        cov="{sample}/regions/{sample}.dedup.cov",
     log:
         "log/{sample}/downsample_bam.txt",
     container:
@@ -118,8 +121,9 @@ rule downsample_bam:
         python3 {input.downsample} \
             --input-bam {input.bam} \
             --input-fastq {input.fastq} \
-            --output {output.bam}
+            --output {output.bam} 2> {log}
 
         # Index the output bam file
-        python -c "import pysam; pysam.index('{output.bam}')"
+        python -c "import pysam; pysam.index('{output.bam}')" 2>> {log}
+        python -c "import pysam; pysam.depth('-o', '{output.cov}', '{output.bam}')" 2>> {log}
         """
