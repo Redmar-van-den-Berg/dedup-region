@@ -16,6 +16,7 @@ config = default
 
 samples = pep.sample_table.sample_name
 
+
 rule all:
     input:
         downsampled_bam=expand(
@@ -24,7 +25,8 @@ rule all:
         ),
         coverage=expand(
             "transcripts/{transcript}/{sample}.before.cov",
-            sample=samples, transcript=config['transcripts']
+            sample=samples,
+            transcript=config["transcripts"],
         ),
 
 
@@ -168,7 +170,7 @@ rule extract_transcript_coverage:
         coverage_after="transcripts/{transcript}/{sample}.after.cov",
         exon_cov_after="transcripts/{transcript}/{sample}.after.avg.cov",
     log:
-        "log/{sample}/{transcript}/extract_transcript_coverage.txt"
+        "log/{sample}/{transcript}/extract_transcript_coverage.txt",
     container:
         containers["dnaio"]
     shell:
