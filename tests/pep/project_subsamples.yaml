@@ -3,4 +3,7 @@ sample_table: "samples.csv"
 subsample_table: "subsamples.csv"
 dedup-region:
   umi_trie: bin/umi-trie-dummy
-  bedfile: tests/data/region.bed
+  gtf_file: tests/data/Homo_sapiens.GRCh38.106.M.gtf
+  transcripts:
+    - ENST00000361851
+    - ENST00000387461

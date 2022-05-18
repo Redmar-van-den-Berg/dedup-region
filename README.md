@@ -34,8 +34,8 @@ The following settings are available for the pipeline.
 | Option               | Type              | Explanation                             |
 | ---------------------| ----------------- | --------------------------------------- |
 | umi_trie             | Required binary   | Compiled version of umi-trie (the tests use a dummy version that is not suitable for real data |
-| bedfile              | Required bedfile  | Bed file containing the regions of interest |
 | gtf file             | Required gtf file | http://ftp.ensembl.org/pub/release-106/gtf/homo_sapiens/Homo_sapiens.GRCh38.106.gtf.gz |
+| transcripts          | List of transcripts | Must match the `transcript_id` from the gtf file |
 
 ## Tests
 You can run the tests that accompany this pipeline with the following commands
@@ -50,3 +50,7 @@ pytest --kwd --tag dry-run
 # Test the performance of the pipeline by running on the test data
 pytest --kwd --tag integration
 ```
+
+## Limitations
+For transcripts located on the mitochondrion, make sure that you rename the
+entries in the GTF file to use `M` instead of `MT` as chromosome name.

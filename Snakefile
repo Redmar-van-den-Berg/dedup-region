@@ -23,6 +23,27 @@ rule all:
         ),
 
 
+rule make_bedfile:
+    """Make a bed file based on the specified transcripts"""
+    input:
+        gtf=config["gtf_file"],
+        to_bed=srcdir("bin/transcript_to_bed.py"),
+    output:
+        bed="transcripts.bed",
+    params:
+        transcripts=config["transcripts"],
+    log:
+        "log/make_bedfile.txt",
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        python3 {input.to_bed} \
+            --gtf {input.gtf} \
+            --transcripts {params.transcripts} > {output.bed} 2> {log}
+        """
+
+
 rule concat:
     """Concatentate the input fastq files"""
     input:
@@ -77,7 +98,7 @@ rule extract_regions:
     """Extract regions from the bam file"""
     input:
         bam=get_bamfile,
-        bed=config["bedfile"],
+        bed=rules.make_bedfile.output.bed,
     output:
         bam="{sample}/regions/{sample}.bam",
         bai="{sample}/regions/{sample}.bam.bai",
