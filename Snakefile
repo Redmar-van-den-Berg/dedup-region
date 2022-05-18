@@ -95,6 +95,9 @@ rule umi_trie:
         folder=$(dirname {output.forw})
         mkdir -p $folder
 
+        # umi-trie uses recursive functions
+        ulimit -s 32768
+
         {input.umi_trie} \
             -d $folder \
             {input.forw} {input.rev} {input.umi} 2> {log}
