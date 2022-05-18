@@ -22,7 +22,7 @@ def parse_attribute(attribute):
     return attributes
 
 
-def gtf_to_json(gtf_handle):
+def gtf_to_json(gtf_handle, chrom_prefix=''):
     """ Parse a GTF file, and yield the records one by one """
     for line in gtf_handle:
         # Skip the headers
@@ -31,6 +31,7 @@ def gtf_to_json(gtf_handle):
         spline = line.strip('\n').split('\t')
         record = {k:v for k, v in zip(gtf_header, spline)}
         record['attribute'] = parse_attribute(record['attribute'])
+        record['seqname'] = f"{chrom_prefix}{record['seqname']}"
         yield record
 
 
