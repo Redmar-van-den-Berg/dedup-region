@@ -74,7 +74,7 @@ def get_avg_transcript_depth(depths, transcript):
 def get_exons(gtf_fname, name, chrom_prefix):
     """ Extract the exons for transcript name from gtf """
     with open(gtf_fname) as fin:
-        for record in gtf.gtf_to_json(fin, chrom_prefix):
+        for record in gtf.gtf_to_json(fin, chrom_prefix, name):
             if record['feature'] == 'exon':
                 if record['attribute']['transcript_id'] == name:
                     yield record
