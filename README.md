@@ -35,6 +35,7 @@ The following settings are available for the pipeline.
 | ---------------------| ----------------- | --------------------------------------- |
 | umi_trie             | Required binary   | Compiled version of umi-trie (the tests use a dummy version that is not suitable for real data |
 | bedfile              | Required bedfile  | Bed file containing the regions of interest |
+| gtf file             | Required gtf file | http://ftp.ensembl.org/pub/release-106/gtf/homo_sapiens/Homo_sapiens.GRCh38.106.gtf.gz |
 
 ## Tests
 You can run the tests that accompany this pipeline with the following commands
