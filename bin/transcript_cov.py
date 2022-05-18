@@ -71,10 +71,10 @@ def get_avg_transcript_depth(depths, transcript):
     return [get_avg_exon_depth(depths, exon) for exon in transcript]
 
 
-def get_exons(gtf_fname, name):
+def get_exons(gtf_fname, name, chrom_prefix):
     """ Extract the exons for transcript name from gtf """
     with open(gtf_fname) as fin:
-        for record in gtf.gtf_to_json(fin):
+        for record in gtf.gtf_to_json(fin, chrom_prefix):
             if record['feature'] == 'exon':
                 if record['attribute']['transcript_id'] == name:
                     yield record
@@ -92,7 +92,7 @@ def get_coverage(cov_fname):
 
 
 def main(args):
-    transcript = list(get_exons(args.gtf, args.transcript))
+    transcript = list(get_exons(args.gtf, args.transcript, 'chr'))
     coverage = get_coverage(args.coverage)
 
     # Print the transcript json

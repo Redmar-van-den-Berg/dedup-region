@@ -26,6 +26,10 @@
     - path: sample1/regions/sample1.dedup.cov
       contains:
         - "chrM\t8218"
+    - path: transcripts/ENST00000361851/sample1.before.cov
+    - path: transcripts/ENST00000361851/sample1.before.avg.cov
+    - path: transcripts/ENST00000361851/sample1.after.cov
+    - path: transcripts/ENST00000361851/sample1.after.avg.cov
 
 - name: integration-subsamples
   tags:

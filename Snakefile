@@ -14,12 +14,17 @@ default.update(config)
 # Set the updated dict as the configuration for the pipeline
 config = default
 
+samples = pep.sample_table.sample_name
 
 rule all:
     input:
         downsampled_bam=expand(
             "{sample}/regions/{sample}.dedup.bam",
-            sample=pep.sample_table.sample_name,
+            sample=samples,
+        ),
+        coverage=expand(
+            "transcripts/{transcript}/{sample}.before.cov",
+            sample=samples, transcript=config['transcripts']
         ),
 
 
@@ -147,4 +152,43 @@ rule downsample_bam:
         # Index the output bam file
         python -c "import pysam; pysam.index('{output.bam}')" 2>> {log}
         python -c "import pysam; pysam.depth('-o', '{output.cov}', '{output.bam}')" 2>> {log}
+        """
+
+
+rule extract_transcript_coverage:
+    """Extract the coverage for each specified transcript"""
+    input:
+        gtf=config["gtf_file"],
+        cov_before=rules.extract_regions.output.cov,
+        cov_after=rules.downsample_bam.output.cov,
+        transcript_cov=srcdir("bin/transcript_cov.py"),
+    output:
+        coverage_before="transcripts/{transcript}/{sample}.before.cov",
+        exon_cov_before="transcripts/{transcript}/{sample}.before.avg.cov",
+        coverage_after="transcripts/{transcript}/{sample}.after.cov",
+        exon_cov_after="transcripts/{transcript}/{sample}.after.avg.cov",
+    log:
+        "log/{sample}/{transcript}/extract_transcript_coverage.txt"
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        # Create output folder
+        mkdir -p transcripts/{wildcards.transcript}
+
+        # Coverage before umi-tools
+        python3 {input.transcript_cov} \
+            --gtf {input.gtf} \
+            --transcript {wildcards.transcript} \
+            --coverage {input.cov_before} \
+            --coverage-out {output.coverage_before} \
+            --avg-exon {output.exon_cov_before} 2> {log}
+
+        # Coverage after running umi-tools
+        python3 {input.transcript_cov} \
+            --gtf {input.gtf} \
+            --transcript {wildcards.transcript} \
+            --coverage {input.cov_after} \
+            --coverage-out {output.coverage_after} \
+            --avg-exon {output.exon_cov_after} 2>> {log}
         """
