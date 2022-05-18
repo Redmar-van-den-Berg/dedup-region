@@ -3,6 +3,8 @@ containers = {
     # dnaio 0.8.1, pysam 0.19.0
     "dnaio": "docker://quay.io/biocontainers/mulled-v2-2996a7d035117c4238b2b801e740a69df21d91e1:6b3ae5f1a97f370227e8134ba3efc0e318b288c3-0",
     "samtools": "docker://quay.io/biocontainers/samtools:1.15.1--h1170115_0",
+    # Plotly 4.3.0
+    "plotly": "docker://quay.io/biocontainers/mulled-v2-d6a7949f2d361f31aa7c2a49c2f9b3548fbef800:eba2682ddfb86c225207dfb206fa3db75f6c143e-0",
 }
 
 default = dict()

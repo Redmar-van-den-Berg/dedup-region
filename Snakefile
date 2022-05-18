@@ -28,6 +28,11 @@ rule all:
             sample=samples,
             transcript=config["transcripts"],
         ),
+        cov_plot=expand(
+            "transcripts/{transcript}/{sample}_{transcript}.html",
+            sample=samples,
+            transcript=config["transcripts"],
+        ),
 
 
 rule make_bedfile:
@@ -196,4 +201,25 @@ rule extract_transcript_coverage:
             --coverage {input.cov_after} \
             --coverage-out {output.coverage_after} \
             --avg-exon {output.exon_cov_after} 2>> {log}
+        """
+
+
+rule plot_sample_coverage:
+    """Plot the coverage, per exon, for each individual sample"""
+    input:
+        before=rules.extract_transcript_coverage.output.coverage_before,
+        after=rules.extract_transcript_coverage.output.coverage_after,
+        plot_cov=srcdir("bin/plot_cov.py"),
+    output:
+        "transcripts/{transcript}/{sample}_{transcript}.html",
+    log:
+        "log/{sample}/plot_sample_coverage_{transcript}.txt",
+    container:
+        containers["plotly"]
+    shell:
+        """
+        python3 {input.plot_cov} \
+            --before {input.before} \
+            --after {input.after} \
+            --output {output} 2> {log}
         """

@@ -19,8 +19,10 @@
       - "transcripts/ENST00000361851/sample1.before.avg.cov"
       - "transcripts/ENST00000361851/sample1.after.cov"
       - "transcripts/ENST00000361851/sample1.after.avg.cov"
+      - "transcripts/ENST00000361851/sample1_ENST00000361851.html"
       - "transcripts/ENST00000387461/sample1.before.cov"
       - "transcripts/ENST00000387461/sample1.before.avg.cov"
+      - "transcripts/ENST00000387461/sample1_ENST00000387461.html"
       - "transcripts/ENST00000361851/sample2.before.cov"
 
 - name: dry-run-subsamples

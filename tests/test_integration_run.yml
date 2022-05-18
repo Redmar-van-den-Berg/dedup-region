@@ -30,6 +30,9 @@
     - path: transcripts/ENST00000361851/sample1.before.avg.cov
     - path: transcripts/ENST00000361851/sample1.after.cov
     - path: transcripts/ENST00000361851/sample1.after.avg.cov
+    # Test if the coverage graphs are generated
+    - path: transcripts/ENST00000361851/sample1_ENST00000361851.html
+    - path: transcripts/ENST00000387461/sample1_ENST00000387461.html
 
 - name: integration-subsamples
   tags:
