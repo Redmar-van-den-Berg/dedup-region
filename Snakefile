@@ -134,7 +134,7 @@ rule extract_regions:
             2> {log}
 
             samtools index {output.bam} 2>> {log}
-            samtools depth -a {output.bam} > {output.cov} 2>> {log}
+            samtools depth {output.bam} > {output.cov} 2>> {log}
         """
 
 
@@ -161,7 +161,7 @@ rule downsample_bam:
 
         # Index the output bam file
         python -c "import pysam; pysam.index('{output.bam}')" 2>> {log}
-        python -c "import pysam; pysam.depth('-o', '{output.cov}', '-a', '{output.bam}')" 2>> {log}
+        python -c "import pysam; pysam.depth('-o', '{output.cov}', '{output.bam}')" 2>> {log}
         """
 
 
