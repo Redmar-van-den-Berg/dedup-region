@@ -37,6 +37,10 @@ rule all:
             "transcripts/{transcript}_exons.html",
             transcript=config["transcripts"],
         ),
+        transcript_json=expand(
+            "transcripts/{transcript}.json",
+            transcript=config["transcripts"],
+        ),
 
 
 rule make_bedfile:
@@ -169,6 +173,30 @@ rule downsample_bam:
         """
 
 
+rule extract_transcript_json:
+    """Extract the json for each specified transcript"""
+    input:
+        gtf=config["gtf_file"],
+        transcript_json=srcdir("bin/transcript_json.py"),
+    output:
+        transcript_json="transcripts/{transcript}.json",
+    log:
+        "log/{transcript}/extract_transcript_coverage.txt",
+    container:
+        containers["dnaio"]
+    shell:
+        """
+        # Create output folder
+        mkdir -p transcripts/{wildcards.transcript}
+
+        # Coverage before umi-tools
+        python3 {input.transcript_json} \
+            --gtf {input.gtf} \
+            --transcript {wildcards.transcript} \
+            > {output.transcript_json} 2> {log}
+        """
+
+
 rule extract_transcript_coverage:
     """Extract the coverage for each specified transcript"""
     input:
@@ -181,7 +209,6 @@ rule extract_transcript_coverage:
         exon_cov_before="transcripts/{transcript}/{sample}.before.avg.cov",
         coverage_after="transcripts/{transcript}/{sample}.after.cov",
         exon_cov_after="transcripts/{transcript}/{sample}.after.avg.cov",
-        transcript_json="transcripts/{transcript}.{sample}.json",
     log:
         "log/{sample}/{transcript}/extract_transcript_coverage.txt",
     container:
@@ -197,7 +224,6 @@ rule extract_transcript_coverage:
             --transcript {wildcards.transcript} \
             --coverage {input.cov_before} \
             --coverage-out {output.coverage_before} \
-            --transcript-out {output.transcript_json} \
             --avg-exon {output.exon_cov_before} 2> {log}
 
         # Coverage after running umi-tools

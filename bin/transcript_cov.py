@@ -104,11 +104,6 @@ def main(args):
     transcript = list(get_exons(args.gtf, args.transcript, 'chr'))
     coverage = get_coverage(args.coverage)
 
-    # Print the transcript json
-    if (out := args.transcript_out):
-        with open(out, 'wt') as fout:
-            print(json.dumps(transcript, indent=True), file=fout)
-
     # Print the coverage of the transcript
     if (out := args.coverage_out):
         with open(args.coverage_out, 'wt') as fout:
@@ -131,7 +126,6 @@ if __name__ == '__main__':
     parser.add_argument('--transcript', required=True)
     parser.add_argument('--coverage', required=True)
     parser.add_argument('--coverage-out', required=False)
-    parser.add_argument('--transcript-out', required=False)
     parser.add_argument('--avg-exon', required=False)
 
     arguments = parser.parse_args()
