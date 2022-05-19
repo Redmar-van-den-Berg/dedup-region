@@ -49,7 +49,7 @@ def get_transcript_depth(depths, transcript):
     d = {int(x.pos): x for x in depths}
 
     # Needed to create a dummy Depth object with 0 coverage
-    chrom = depths[0].chrom
+    chrom = transcript[0]['seqname']
 
     for pos in get_transcript_positions(transcript):
         # Positions with 0 depth at the ends of the specified regions are not
@@ -63,12 +63,15 @@ def get_avg_exon_depth(depths, exon):
     # The chromosome the exon is on
     chrom = exon['seqname']
 
+    # We are only interested in the coverage on the correct chromosome
+    d = {int(x.pos): x.depth for x in depths if x.chrom == chrom}
+
     # The positions that are part of the exon
     positions = set(get_exon_positions(exon))
 
     # Get all depths that are part of the exon positions, on the correct
-    # chromosome
-    exon_depths = [x.depth for x in depths if x.chrom == chrom and x.pos in positions]
+    # chromosome. If the data is missing, coverage is 0
+    exon_depths = [d.get(pos, 0) for pos in positions]
 
     return sum(exon_depths)/len(exon_depths)
 

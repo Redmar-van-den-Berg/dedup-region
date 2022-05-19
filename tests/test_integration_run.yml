@@ -50,3 +50,25 @@
     - path: sample1/concat/forward.fastq.gz
     - path: sample1/umi-trie/forward_dedup.fastq.gz
     - path: sample1/regions/sample1.bam
+
+# Test the pipeline for transcript with 0 coverage
+- name: integration-no-coverage
+  tags:
+    - integration
+  command: >
+    snakemake
+      --reason
+      --printshellcmds
+      --jobs 1
+      --latency-wait 10
+      --use-singularity --singularity-args ' --cleanenv --bind /tmp'
+      --config pepfile=tests/pep/project_no_coverage.yaml
+      --snakefile Snakefile
+  files:
+      # Test that the first and last postion of the exon is 0
+      # Assume that this means that all other positions are 0 as well, since
+      # there was no coverage
+    - path: transcripts/ENST00000494292/sample1.after.cov
+      contains:
+        - "chr3\t169663775\t0"
+        - "chr3\t169084761\t0"
