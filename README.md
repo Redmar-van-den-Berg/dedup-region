@@ -52,5 +52,7 @@ pytest --kwd --tag integration
 ```
 
 ## Limitations
-For transcripts located on the mitochondrion, make sure that you rename the
+* For transcripts located on the mitochondrion, make sure that you rename the
 entries in the GTF file to use `M` instead of `MT` as chromosome name.
+* If a transcript has no coverage **before** deduplication, the remaining coverage after deduplication will be shown as 0%.
+0% in the `trasncripts/{transcript}_exons.html graph.

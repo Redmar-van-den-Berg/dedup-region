@@ -39,8 +39,9 @@ def main(args):
         # before and after
         b = read_cov_depth(before)
         a = read_cov_depth(after)
-        # If there is 0 coverage before, then we put in 100 %
-        d = [ (af/be)* 100 if be > 0 else 100 for af, be in zip(a, b)]
+        # If there is 0 coverage before deduplication, we put in 0 %.
+        # This makes the graphs look a bit nicer
+        d = [ (af/be)* 100 if be > 0 else 0 for af, be in zip(a, b)]
 
         # Derive the sample name from the file name
         sample = guess_sample(before)
@@ -78,7 +79,7 @@ def plot_coverage(diff, samples, fname, transcript_name):
     fig.update_layout(
             title=f"Exon coverage for {transcript_name}",
             xaxis_title="Exon",
-            yaxis_title="Coverage after deduplication(%)"
+            yaxis_title="Remaining coverage after deduplication(%)"
     )
     fig.write_html(fname)
 
