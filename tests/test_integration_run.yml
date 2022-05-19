@@ -33,12 +33,18 @@
     # Test if the coverage graphs are generated
     - path: transcripts/ENST00000361851/sample1_ENST00000361851.html
     - path: transcripts/ENST00000387461/sample1_ENST00000387461.html
+      contains:
+        - "MT-TP (ENST00000387461)"
     # Test if the transcript json is generated
     - path: transcripts/ENST00000387461.sample1.json
       should_exist: False
     - path: transcripts/ENST00000387461.json
     # Test if the exon coverage file is created
     - path: transcripts/ENST00000387461_exons.html
+      contains:
+        - "MT-TP (ENST00000387461)"
+        - "sample1"
+        - "sample2"
 
 - name: integration-subsamples
   tags:

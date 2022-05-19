@@ -15,12 +15,12 @@ def read_cov_depth(fname):
 
 def guess_sample(fname):
     """ Guess the sample name from the file path """
-    return fname.split('/')[-1].split('.')[0]
+    return fname.split('/')[0]
 
 
 def guess_transcript(fname):
     """ Guess the transcript name from the file path """
-    return fname.split('/')[1]
+    return fname.split('/')[-1].split('.')[0]
 
 
 def guess_gene_name(fname, transcript):

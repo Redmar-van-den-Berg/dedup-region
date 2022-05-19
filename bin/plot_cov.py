@@ -22,8 +22,7 @@ def guess_gene_name(fname, transcript):
 
 def guess_transcript(fname):
     """ Guess the transcript name from the file path """
-    print(fname)
-    return fname.split('/')[1]
+    return fname.split('/')[-1].split('.')[0]
 
 
 def main(args):
