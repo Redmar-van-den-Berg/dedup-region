@@ -3,6 +3,7 @@
 import argparse
 import plotly.graph_objects as go
 
+import gtf
 
 def read_cov_depth(fname):
     depths = list()
@@ -22,6 +23,12 @@ def guess_transcript(fname):
     return fname.split('/')[1]
 
 
+def guess_gene_name(fname, transcript):
+    with open(fname) as fin:
+        for record in gtf.gtf_to_json(fin, '', transcript):
+            return record['attribute']['gene_name']
+
+
 def main(args):
     # List of percentage differences to plot
     diff = list()
@@ -32,7 +39,8 @@ def main(args):
         # before and after
         b = read_cov_depth(before)
         a = read_cov_depth(after)
-        d = [ (af/be)* 100 for af, be in zip(a, b) ]
+        # If there is 0 coverage before, then we put in 100 %
+        d = [ (af/be)* 100 if be > 0 else 100 for af, be in zip(a, b)]
 
         # Derive the sample name from the file name
         sample = guess_sample(before)
@@ -44,8 +52,13 @@ def main(args):
     # Guess the transcript name for the figure heading
     transcript_name = guess_transcript(before)
 
+    # Get the gene name from the transcript name
+    gene_name = guess_gene_name(args.gtf, transcript_name)
+
+    display_name = f"{gene_name} ({transcript_name})"
+
     # Create the figure
-    plot_coverage(diff, samples, args.output, transcript_name)
+    plot_coverage(diff, samples, args.output, display_name)
 
 
 def plot_coverage(diff, samples, fname, transcript_name):
@@ -77,6 +90,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--before', required=True, nargs='+', help='Coverage before deduplication')
     parser.add_argument('--after', required=True, nargs='+', help='Coverage after deduplication')
+    parser.add_argument('--gtf', required=True, help='Used to determine the gene name')
     parser.add_argument('--output', required=True)
 
     arguments = parser.parse_args()

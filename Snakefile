@@ -215,6 +215,7 @@ rule plot_sample_coverage:
     input:
         before=rules.extract_transcript_coverage.output.coverage_before,
         after=rules.extract_transcript_coverage.output.coverage_after,
+        gtf=config["gtf_file"],
         plot_cov=srcdir("bin/plot_cov.py"),
     output:
         "transcripts/{transcript}/{sample}_{transcript}.html",
@@ -227,14 +228,17 @@ rule plot_sample_coverage:
         python3 {input.plot_cov} \
             --before {input.before} \
             --after {input.after} \
+            --gtf {input.gtf} \
             --output {output} 2> {log}
         """
+
 
 rule plot_average_transcript:
     """Plot the average difference between before and after for each sample"""
     input:
         before=get_average_coverage_before,
         after=get_average_coverage_after,
+        gtf=config["gtf_file"],
         plot_avg_cov=srcdir("bin/plot_avg_cov.py"),
     output:
         "transcripts/{transcript}_exons.html",
@@ -247,5 +251,6 @@ rule plot_average_transcript:
         python3 {input.plot_avg_cov} \
             --before {input.before} \
             --after {input.after} \
+            --gtf {input.gtf} \
             --output {output} 2> {log}
         """
