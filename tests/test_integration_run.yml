@@ -33,6 +33,8 @@
     # Test if the coverage graphs are generated
     - path: transcripts/ENST00000361851/sample1_ENST00000361851.html
     - path: transcripts/ENST00000387461/sample1_ENST00000387461.html
+    # Test if the transcript json is generated
+    - path: transcripts/ENST00000387461.sample1.json
 
 - name: integration-subsamples
   tags:

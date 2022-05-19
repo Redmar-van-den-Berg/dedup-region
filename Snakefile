@@ -177,6 +177,7 @@ rule extract_transcript_coverage:
         exon_cov_before="transcripts/{transcript}/{sample}.before.avg.cov",
         coverage_after="transcripts/{transcript}/{sample}.after.cov",
         exon_cov_after="transcripts/{transcript}/{sample}.after.avg.cov",
+        transcript_json="transcripts/{transcript}.{sample}.json",
     log:
         "log/{sample}/{transcript}/extract_transcript_coverage.txt",
     container:
@@ -192,6 +193,7 @@ rule extract_transcript_coverage:
             --transcript {wildcards.transcript} \
             --coverage {input.cov_before} \
             --coverage-out {output.coverage_before} \
+            --transcript-out {output.transcript_json} \
             --avg-exon {output.exon_cov_before} 2> {log}
 
         # Coverage after running umi-tools
