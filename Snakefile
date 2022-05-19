@@ -24,7 +24,7 @@ rule all:
             sample=samples,
         ),
         coverage=expand(
-            "transcripts/{transcript}/{sample}.before.cov",
+            "{sample}/{transcript}.before.cov",
             sample=samples,
             transcript=config["transcripts"],
         ),
@@ -205,10 +205,10 @@ rule extract_transcript_coverage:
         cov_after=rules.downsample_bam.output.cov,
         transcript_cov=srcdir("bin/transcript_cov.py"),
     output:
-        coverage_before="transcripts/{transcript}/{sample}.before.cov",
-        exon_cov_before="transcripts/{transcript}/{sample}.before.avg.cov",
-        coverage_after="transcripts/{transcript}/{sample}.after.cov",
-        exon_cov_after="transcripts/{transcript}/{sample}.after.avg.cov",
+        coverage_before="{sample}/{transcript}.before.cov",
+        exon_cov_before="{sample}/{transcript}.before.avg.cov",
+        coverage_after="{sample}/{transcript}.after.cov",
+        exon_cov_after="{sample}/{transcript}.after.avg.cov",
     log:
         "log/{sample}/{transcript}/extract_transcript_coverage.txt",
     container:
@@ -216,7 +216,7 @@ rule extract_transcript_coverage:
     shell:
         """
         # Create output folder
-        mkdir -p transcripts/{wildcards.transcript}
+        mkdir -p {wildcards.sample}
 
         # Coverage before umi-tools
         python3 {input.transcript_cov} \

@@ -39,7 +39,7 @@ def get_bamfile(wildcards):
 
 def get_average_coverage(wc, when):
     return [
-        f"transcripts/{wc.transcript}/{sample}.{when}.avg.cov"
+        f"{sample}/{wc.transcript}.{when}.avg.cov"
         for sample in pep.sample_table.sample_name
     ]
 

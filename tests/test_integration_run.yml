@@ -26,10 +26,10 @@
     - path: sample1/regions/sample1.dedup.cov
       contains:
         - "chrM\t8218"
-    - path: transcripts/ENST00000361851/sample1.before.cov
-    - path: transcripts/ENST00000361851/sample1.before.avg.cov
-    - path: transcripts/ENST00000361851/sample1.after.cov
-    - path: transcripts/ENST00000361851/sample1.after.avg.cov
+    - path: sample1/ENST00000361851.before.cov
+    - path: sample1/ENST00000361851.before.avg.cov
+    - path: sample1/ENST00000361851.after.cov
+    - path: sample1/ENST00000361851.after.avg.cov
     # Test if the coverage graphs are generated
     - path: transcripts/ENST00000361851/sample1_ENST00000361851.html
     - path: transcripts/ENST00000387461/sample1_ENST00000387461.html
@@ -74,7 +74,7 @@
       # Test that the first and last postion of the exon is 0
       # Assume that this means that all other positions are 0 as well, since
       # there was no coverage
-    - path: transcripts/ENST00000494292/sample1.after.cov
+    - path: sample1/ENST00000494292.after.cov
       contains:
         - "chr3\t169663775\t0"
         - "chr3\t169084761\t0"
