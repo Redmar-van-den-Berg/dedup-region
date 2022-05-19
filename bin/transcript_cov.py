@@ -48,11 +48,14 @@ def get_transcript_depth(depths, transcript):
     # by position
     d = {int(x.pos): x for x in depths}
 
+    # Needed to create a dummy Depth object with 0 coverage
+    chrom = depths[0].chrom
+
     for pos in get_transcript_positions(transcript):
         # Positions with 0 depth at the ends of the specified regions are not
         # included with samtools depth. Therefore, here we return 0 for missing
         # values
-        yield d.get(pos, 0)
+        yield d.get(pos, Depth(chrom, pos, 0))
 
 
 def get_avg_exon_depth(depths, exon):
