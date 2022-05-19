@@ -49,7 +49,10 @@ def get_transcript_depth(depths, transcript):
     d = {int(x.pos): x for x in depths}
 
     for pos in get_transcript_positions(transcript):
-        yield d[pos]
+        # Positions with 0 depth at the ends of the specified regions are not
+        # included with samtools depth. Therefore, here we return 0 for missing
+        # values
+        yield d.get(pos, 0)
 
 
 def get_avg_exon_depth(depths, exon):
