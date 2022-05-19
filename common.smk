@@ -35,3 +35,16 @@ def get_umi(wildcards):
 
 def get_bamfile(wildcards):
     return pep.sample_table.loc[wildcards.sample, "bamfile"]
+
+
+def get_average_coverage(wc, when):
+    return [f"transcripts/{wc.transcript}/{sample}.{when}.avg.cov" for sample
+            in pep.sample_table.sample_name]
+
+
+def get_average_coverage_before(wildcards):
+    return get_average_coverage(wildcards, "before")
+
+
+def get_average_coverage_after(wildcards):
+    return get_average_coverage(wildcards, "after")

@@ -35,6 +35,8 @@
     - path: transcripts/ENST00000387461/sample1_ENST00000387461.html
     # Test if the transcript json is generated
     - path: transcripts/ENST00000387461.sample1.json
+    # Test if the exon coverage file is created
+    - path: transcripts/ENST00000387461_exons.html
 
 - name: integration-subsamples
   tags:

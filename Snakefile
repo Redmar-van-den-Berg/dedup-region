@@ -33,6 +33,10 @@ rule all:
             sample=samples,
             transcript=config["transcripts"],
         ),
+        avg_plot=expand(
+            "transcripts/{transcript}_exons.html",
+            transcript=config["transcripts"],
+        ),
 
 
 rule make_bedfile:
@@ -221,6 +225,26 @@ rule plot_sample_coverage:
     shell:
         """
         python3 {input.plot_cov} \
+            --before {input.before} \
+            --after {input.after} \
+            --output {output} 2> {log}
+        """
+
+rule plot_average_transcript:
+    """Plot the average difference between before and after for each sample"""
+    input:
+        before=get_average_coverage_before,
+        after=get_average_coverage_after,
+        plot_avg_cov=srcdir("bin/plot_avg_cov.py"),
+    output:
+        "transcripts/{transcript}_exons.html",
+    log:
+        "log/plot_average_transcript_{transcript}.txt",
+    container:
+        containers["plotly"]
+    shell:
+        """
+        python3 {input.plot_avg_cov} \
             --before {input.before} \
             --after {input.after} \
             --output {output} 2> {log}
