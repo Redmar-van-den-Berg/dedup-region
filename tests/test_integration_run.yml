@@ -45,6 +45,12 @@
         - "MT-TP (ENST00000387461)"
         - "sample1"
         - "sample2"
+    - path: "transcripts/all_transcripts.html"
+      # Test that both transcripts are present in the joined file
+      contains:
+        - "ENST00000361851"
+        - "ENST00000387461"
+
 
 - name: integration-subsamples
   tags:
