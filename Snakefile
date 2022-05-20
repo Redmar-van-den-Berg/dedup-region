@@ -78,7 +78,7 @@ rule concat:
     log:
         "log/{sample}_concat.txt",
     container:
-        containers["debian"]
+        containers["samtools"]
     shell:
         """
         mkdir -p $(dirname {output.forw})
@@ -292,7 +292,7 @@ rule all_transcripts:
     log:
         "log/all_transcripts.txt",
     container:
-        containers["debian"]
+        containers["samtools"]
     shell:
         """
         cat {input.html} > {output} 2> {log}
