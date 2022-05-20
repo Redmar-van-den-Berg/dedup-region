@@ -37,11 +37,11 @@ rule all:
             "transcripts/{transcript}_exons.html",
             transcript=config["transcripts"],
         ),
-        all_transcripts="transcripts/all_transcripts.html",
         transcript_json=expand(
             "transcripts/{transcript}.json",
             transcript=config["transcripts"],
         ),
+        all_transcripts="transcripts/all_transcripts.html",
 
 
 rule make_bedfile:
@@ -282,14 +282,15 @@ rule plot_average_transcript:
             --output {output} 2> {log}
         """
 
+
 rule all_transcripts:
     """Join all average transcripts plots together"""
     input:
-        html = [f"transcripts/{t}_exons.html" for t in config["transcripts"]],
+        html=[f"transcripts/{t}_exons.html" for t in config["transcripts"]],
     output:
-        "transcripts/all_transcripts.html"
+        "transcripts/all_transcripts.html",
     log:
-        "log/all_transcripts.txt"
+        "log/all_transcripts.txt",
     container:
         containers["debian"]
     shell:
