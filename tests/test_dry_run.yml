@@ -27,6 +27,7 @@
       - "sample1/ENST00000361851.before.cov"
       - "transcripts/ENST00000361851.json"
       - "transcripts/ENST00000387461_exons.html"
+      - "transcripts/ENST00000387461_3d.html"
       - "transcripts/all_transcripts.html"
 
 - name: dry-run-subsamples

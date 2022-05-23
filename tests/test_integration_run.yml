@@ -54,6 +54,7 @@
       contains:
         - "ENST00000361851"
         - "ENST00000387461"
+    - path: transcripts/ENST00000387461_3d.html
 
 
 - name: integration-subsamples

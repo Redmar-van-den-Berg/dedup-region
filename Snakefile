@@ -42,6 +42,9 @@ rule all:
             transcript=config["transcripts"],
         ),
         all_transcripts="transcripts/all_transcripts.html",
+        exon_3d_plot=expand(
+            "transcripts/{transcript}_3d.html", transcript=config["transcripts"]
+        ),
 
 
 rule make_bedfile:
@@ -280,6 +283,29 @@ rule plot_average_transcript:
         python3 {input.plot_avg_cov} \
             --before {input.before} \
             --after {input.after} \
+            --gtf {input.gtf} \
+            --output {output} 2> {log}
+        """
+
+
+rule plot_3d_transcript:
+    """Plot the 3d coverage per sample exon, against the number of unique reads"""
+    input:
+        coverage=get_average_coverage_after,
+        stats=[f"{sample}/umi-trie/stats.dat" for sample in samples],
+        gtf=config["gtf_file"],
+        plot_3d_exon=srcdir("bin/plot_3d_exon.py"),
+    output:
+        "transcripts/{transcript}_3d.html",
+    log:
+        "log/plot_3d_transcript_{transcript}.txt",
+    container:
+        containers["plotly"]
+    shell:
+        """
+        python3 {input.plot_3d_exon} \
+            --coverage {input.coverage} \
+            --umi-stats {input.stats} \
             --gtf {input.gtf} \
             --output {output} 2> {log}
         """
