@@ -17,6 +17,11 @@ config = default
 samples = pep.sample_table.sample_name
 
 
+localrules:
+    all,
+    group_plots,
+
+
 rule all:
     input:
         downsampled_bam=expand(
@@ -42,9 +47,7 @@ rule all:
             transcript=config["transcripts"],
         ),
         all_transcripts="transcripts/all_transcripts.html",
-        exon_3d_plot=expand(
-            "transcripts/{transcript}_3d.html", transcript=config["transcripts"]
-        ),
+        all_3d_transcripts="transcripts/all_3d_transcripts.html",
 
 
 rule make_bedfile:
@@ -311,17 +314,20 @@ rule plot_3d_transcript:
         """
 
 
-rule all_transcripts:
+rule group_plots:
     """Join all average transcripts plots together"""
     input:
-        html=[f"transcripts/{t}_exons.html" for t in config["transcripts"]],
+        exons=[f"transcripts/{t}_exons.html" for t in config["transcripts"]],
+        exons_3d=[f"transcripts/{t}_3d.html" for t in config["transcripts"]],
     output:
-        "transcripts/all_transcripts.html",
+        exons="transcripts/all_transcripts.html",
+        exons_3d="transcripts/all_3d_transcripts.html",
     log:
-        "log/all_transcripts.txt",
+        "log/group_plots.txt",
     container:
         containers["samtools"]
     shell:
         """
-        cat {input.html} > {output} 2> {log}
+        cat {input.exons} > {output.exons} 2> {log}
+        cat {input.exons_3d} > {output.exons_3d} 2>> {log}
         """

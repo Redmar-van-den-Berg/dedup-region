@@ -29,6 +29,7 @@
       - "transcripts/ENST00000387461_exons.html"
       - "transcripts/ENST00000387461_3d.html"
       - "transcripts/all_transcripts.html"
+      - "transcripts/all_3d_transcripts.html"
 
 - name: dry-run-subsamples
   tags:

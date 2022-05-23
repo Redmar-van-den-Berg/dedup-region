@@ -49,12 +49,15 @@
         - "MT-TP (ENST00000387461)"
         - "sample1"
         - "sample2"
+    # Test grouping of plots
     - path: "transcripts/all_transcripts.html"
       # Test that both transcripts are present in the joined file
       contains:
         - "ENST00000361851"
         - "ENST00000387461"
-    - path: transcripts/ENST00000387461_3d.html
+    - path: transcripts/all_3d_transcripts.html
+      contains:
+        - "MT-ATP8 (ENST00000361851)"
 
 
 - name: integration-subsamples
