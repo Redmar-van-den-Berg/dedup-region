@@ -108,11 +108,16 @@ def plot_coverage(data , samples, unique_reads, fname, transcript_name, log_dept
     )
 
     # Determine the range for the x-axis plot
-    m=get_max(data)
+    max_value=get_max(data)
     if log_depth:
-        x_range = [0, math.log(m, 10)]
+        # If all values are zero, we can't take log10
+        if max_value == 0:
+            x_range = [0, 1]
+        # If not zero, we set that as the max value
+        else:
+            x_range = [0, math.log(max_value, 10)]
     else:
-        x_range = [0, m]
+        x_range = [0, max_value]
 
     # Update the layout of the figure
     fig.update_layout(
