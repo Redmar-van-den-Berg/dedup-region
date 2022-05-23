@@ -48,6 +48,7 @@ rule all:
         ),
         all_transcripts="transcripts/all_transcripts.html",
         all_3d_transcripts="transcripts/all_3d_transcripts.html",
+        all_3d_transcripts_log="transcripts/all_3d_transcripts_log.html",
 
 
 rule make_bedfile:
@@ -299,7 +300,8 @@ rule plot_3d_transcript:
         gtf=config["gtf_file"],
         plot_3d_exon=srcdir("bin/plot_3d_exon.py"),
     output:
-        "transcripts/{transcript}_3d.html",
+        linear="transcripts/{transcript}_3d.html",
+        log="transcripts/{transcript}_3d_log.html",
     log:
         "log/plot_3d_transcript_{transcript}.txt",
     container:
@@ -310,7 +312,14 @@ rule plot_3d_transcript:
             --coverage {input.coverage} \
             --umi-stats {input.stats} \
             --gtf {input.gtf} \
-            --output {output} 2> {log}
+            --output {output.linear} 2> {log}
+
+        python3 {input.plot_3d_exon} \
+            --coverage {input.coverage} \
+            --umi-stats {input.stats} \
+            --gtf {input.gtf} \
+            --log-expression \
+            --output {output.log} 2>> {log}
         """
 
 
@@ -319,9 +328,11 @@ rule group_plots:
     input:
         exons=[f"transcripts/{t}_exons.html" for t in config["transcripts"]],
         exons_3d=[f"transcripts/{t}_3d.html" for t in config["transcripts"]],
+        exons_3d_log=[f"transcripts/{t}_3d_log.html" for t in config["transcripts"]],
     output:
         exons="transcripts/all_transcripts.html",
         exons_3d="transcripts/all_3d_transcripts.html",
+        exons_3d_log="transcripts/all_3d_transcripts_log.html",
     log:
         "log/group_plots.txt",
     container:
@@ -330,4 +341,5 @@ rule group_plots:
         """
         cat {input.exons} > {output.exons} 2> {log}
         cat {input.exons_3d} > {output.exons_3d} 2>> {log}
+        cat {input.exons_3d_log} > {output.exons_3d_log} 2>> {log}
         """

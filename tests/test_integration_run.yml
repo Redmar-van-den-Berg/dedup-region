@@ -58,6 +58,10 @@
     - path: transcripts/all_3d_transcripts.html
       contains:
         - "MT-ATP8 (ENST00000361851)"
+    - path: transcripts/all_3d_transcripts_log.html
+      contains:
+        - "MT-ATP8 (ENST00000361851)"
+    - path: transcripts/ENST00000387461_3d_log.html
 
 
 - name: integration-subsamples

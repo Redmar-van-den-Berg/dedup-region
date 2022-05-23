@@ -28,8 +28,10 @@
       - "transcripts/ENST00000361851.json"
       - "transcripts/ENST00000387461_exons.html"
       - "transcripts/ENST00000387461_3d.html"
+      - "transcripts/ENST00000387461_3d_log.html"
       - "transcripts/all_transcripts.html"
       - "transcripts/all_3d_transcripts.html"
+      - "transcripts/all_3d_transcripts_log.html"
 
 - name: dry-run-subsamples
   tags:
