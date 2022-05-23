@@ -100,6 +100,7 @@ rule umi_trie:
         forw="{sample}/umi-trie/forward_dedup.fastq.gz",
         rev="{sample}/umi-trie/reverse_dedup.fastq.gz",
         umi="{sample}/umi-trie/umi_dedup.fastq.gz",
+        stats="{sample}/umi-trie/stats.dat",
     log:
         "log/{sample}-umi-trie.txt",
     container:
@@ -114,6 +115,7 @@ rule umi_trie:
 
         {input.umi_trie} \
             -d $folder \
+            -s \
             {input.forw} {input.rev} {input.umi} 2> {log}
         """
 

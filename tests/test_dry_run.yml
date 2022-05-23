@@ -13,6 +13,7 @@
     contains:
       - "sample1/umi-trie/forward_dedup.fastq.gz"
       - "sample2/umi-trie/forward_dedup.fastq.gz"
+      - "sample2/umi-trie/stats.dat"
       - "sample1/regions/sample1.bam"
       - "sample1/regions/sample1.dedup.bam"
       - "sample1/ENST00000361851.before.cov"
