@@ -2,6 +2,7 @@
 
 import argparse
 import plotly.graph_objects as go
+import math
 
 import gtf
 
@@ -72,23 +73,29 @@ def main(args):
     display_name = f"{gene_name} ({transcript_name})"
 
     # Create the figure
-    plot_coverage(data, samples, unique_reads, args.output, display_name)
+    plot_coverage(data, samples, unique_reads, args.output, display_name,
+            args.log_expression)
 
 
-def plot_coverage(data , samples, unique_reads, fname, transcript_name):
-    print(data)
-    print(samples)
-    print(unique_reads)
+def get_max(data):
+    """Get the max value from a nested list of integers"""
+    m = 0
+    for row in data:
+        for value in row:
+            m = max(m, value)
+    return m
+
+
+def plot_coverage(data , samples, unique_reads, fname, transcript_name, log_depth):
     # To use as x-axis
     exons = [f"Exon-{i+1}" for i in range(len(data[0]))]
 
     # Store the go.Scatter objects for every sample
     traces = list()
 
-    for data, sample, ureads in zip(data, samples, unique_reads):
-        #traces.append(go.Scatter3d(y=data, x=exons, z=[ureads for _ in data], name=sample))
-        traces.append(go.Scatter3d(x=data, y=exons, z=[ureads for _ in data], name=sample, marker={'size': 1}))
-        #traces.append(go.Scatter3d(x=data, y=[ureads for _ in data], z=exons, name=sample, marker={'size': 1}))
+    for depths, sample, ureads in zip(data, samples, unique_reads):
+        traces.append(go.Scatter3d(x=depths, y=exons, z=[ureads for _ in depths],
+            name=sample, marker={'size': 1}))
 
     fig = go.Figure(
             data=traces
@@ -97,15 +104,28 @@ def plot_coverage(data , samples, unique_reads, fname, transcript_name):
     # Default orientation of the figure
     camera = dict(
             up=dict(x=1, y=0, z=0),
-            eye=dict(x=1.5, y=1.5, z=-4)
+            eye=dict(x=0.5, y=0.5, z=-2)
     )
+
+    # Determine the range for the x-axis plot
+    m=get_max(data)
+    if log_depth:
+        x_range = [0, math.log(m, 10)]
+    else:
+        x_range = [0, m]
+
+    # Update the layout of the figure
     fig.update_layout(
             title=f"Exon coverage for {transcript_name}",
             scene_camera=camera,
             scene=dict(
-                xaxis_title='Average exon coverage',
+                xaxis={
+                    'title': 'Average exon coverage',
+                    'type': 'log' if log_depth else 'linear',
+                    'range': x_range
+                },
                 yaxis_title='',
-                zaxis_title='Number of unique reads'
+                zaxis_title='Number of unique reads',
             )
     )
     fig.write_html(fname)
@@ -120,6 +140,7 @@ if __name__ == '__main__':
     parser.add_argument('--umi-stats', required=True, nargs='+', help='umi-trie stats output file')
     parser.add_argument('--gtf', required=True, help='Used to determine the gene name')
     parser.add_argument('--output', required=True)
+    parser.add_argument('--log-expression', default=False, action='store_true')
 
     arguments = parser.parse_args()
     main(arguments)
