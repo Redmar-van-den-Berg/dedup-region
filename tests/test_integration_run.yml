@@ -62,6 +62,11 @@
       contains:
         - "MT-ATP8 (ENST00000361851)"
     - path: transcripts/ENST00000387461_3d_log.html
+    # Test the merged per-transcript coverage
+    - path: transcripts/ENST00000361851_after_merged.tsv
+      contains:
+        - "sample1\tsample2"
+        - "142\t142"
 
 
 - name: integration-subsamples

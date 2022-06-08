@@ -46,6 +46,10 @@ rule all:
             "transcripts/{transcript}.json",
             transcript=config["transcripts"],
         ),
+        transcript_after_merged=expand(
+            "transcripts/{transcript}_after_merged.tsv",
+            transcript=config["transcripts"],
+        ),
         all_transcripts="transcripts/all_transcripts.html",
         all_3d_transcripts="transcripts/all_3d_transcripts.html",
         all_3d_transcripts_log="transcripts/all_3d_transcripts_log.html",
@@ -342,4 +346,22 @@ rule group_plots:
         cat {input.exons} > {output.exons} 2> {log}
         cat {input.exons_3d} > {output.exons_3d} 2>> {log}
         cat {input.exons_3d_log} > {output.exons_3d_log} 2>> {log}
+        """
+
+
+rule merge_to_tsv:
+    """Merge the coverage for each exon per sample"""
+    input:
+        after=get_coverage_after,
+        merge_cov=srcdir("bin/merge_transcript_cov.py"),
+    output:
+        "transcripts/{transcript}_after_merged.tsv",
+    log:
+        "log/merge_transcript_cov_{transcript}.txt",
+    container:
+        containers["plotly"]
+    shell:
+        """
+        python3 {input.merge_cov} \
+            {input.after} > {output} 2> {log}
         """

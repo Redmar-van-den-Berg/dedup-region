@@ -32,6 +32,7 @@
       - "transcripts/all_transcripts.html"
       - "transcripts/all_3d_transcripts.html"
       - "transcripts/all_3d_transcripts_log.html"
+      - "transcripts/ENST00000361851_after_merged.tsv"
 
 - name: dry-run-subsamples
   tags:

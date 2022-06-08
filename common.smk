@@ -49,3 +49,14 @@ def get_average_coverage_before(wildcards):
 
 def get_average_coverage_after(wildcards):
     return get_average_coverage(wildcards, "after")
+
+
+def get_coverage(wc, when):
+    return [
+        f"{sample}/{wc.transcript}.{when}.cov"
+        for sample in pep.sample_table.sample_name
+    ]
+
+
+def get_coverage_after(wildcards):
+    return get_coverage(wildcards, "after")
